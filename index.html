@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <meta name="theme-color" content="#050507">
 <title>ESUKA AI 2.0</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
 <style>
 :root {
@@ -28,54 +27,6 @@ body{
 }
 button,input,textarea,select{font:inherit}
 button{color:inherit;cursor:pointer}
-button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{
- outline:2px solid rgba(255,255,255,0.4);outline-offset:3px;
-}
-
-/* AUTH SCREEN */
-.auth-screen{
- position:fixed;inset:0;z-index:200;
- display:flex;align-items:center;justify-content:center;
- padding:20px;background:var(--bg);overflow-y:auto;
-}
-.auth-box{
- width:100%;max-width:390px;padding:30px 23px;
- background:linear-gradient(145deg, #12121a, #08080c);
- border:1px solid rgba(255, 255, 255, 0.08);
- border-radius:23px;text-align:center;
- box-shadow:0 25px 60px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.1);
- backdrop-filter:blur(25px);-webkit-backdrop-filter:blur(25px);
-}
-.auth-logo{
- width:65px;height:65px;margin:0 auto 17px;
- display:grid;place-items:center;border-radius:20px;
- background:linear-gradient(135deg, #2a2a3b, #111116);
- border:1px solid rgba(255, 255, 255, 0.2);
- box-shadow:0 0 20px rgba(255,255,255,0.05);
- color:white;font-size:37px;font-weight:900;
-}
-.auth-title{font-size:27px;font-weight:850;letter-spacing:2px}
-.auth-subtitle{font-size:12px;color:var(--muted);margin:9px 0 24px}
-.auth-input{
- width:100%;padding:15px;margin-bottom:11px;
- background:var(--input);border:1px solid var(--border);
- border-radius:12px;color:white;outline:none;
-}
-.auth-btn{
- width:100%;padding:14px;border-radius:12px;
- margin-top:9px;border:1px solid var(--border);
- background:var(--panel2);color:white;font-size:13px;font-weight:750;
- transition:.2s;
-}
-.auth-btn.primary{
- background:linear-gradient(135deg, #ffffff, #d0d0d8);
- color:#08080c;border:0;
- box-shadow:0 4px 20px rgba(255,255,255,0.15);
-}
-.auth-status{
- min-height:20px;margin-top:13px;color:var(--muted);
- font-size:11px;line-height:1.5;overflow-wrap:anywhere;
-}
 
 /* APP LAYOUT */
 .app{height:100dvh;display:flex;overflow:hidden}
@@ -110,10 +61,6 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 }
 .profile-name{font-size:13px;font-weight:700}
 .profile-sub{font-size:11px;color:var(--muted);margin-top:2px}
-.logout-btn{
- margin-left:auto;background:transparent;border:1px solid var(--border);
- border-radius:9px;padding:8px;font-size:11px;color:var(--muted);
-}
 
 /* MAIN CHAT AREA */
 .main{flex:1;min-width:0;display:flex;flex-direction:column;position:relative}
@@ -225,22 +172,8 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 
 <body>
 
-<!-- AUTH SCREEN -->
-<section class="auth-screen" id="authScreen">
- <div class="auth-box">
-  <div class="auth-logo">E</div>
-  <div class="auth-title">ESUKA AI 2.0</div>
-  <div class="auth-subtitle">Ultra-Premium Intelligence</div>
-  <input class="auth-input" id="authEmail" type="email" placeholder="Email address">
-  <input class="auth-input" id="authPassword" type="password" placeholder="Password">
-  <button class="auth-btn primary" id="emailLoginBtn">Login</button>
-  <button class="auth-btn" id="signupBtn">Create Account</button>
-  <div class="auth-status" id="authStatus">Sign in to continue.</div>
- </div>
-</section>
-
-<!-- MAIN APP -->
-<div class="app" id="appRoot" style="display:none">
+<!-- MAIN APP (Direct Open) -->
+<div class="app" id="appRoot">
 <aside class="sidebar" id="sidebar">
  <div class="brand">
   <div class="logo">E</div>
@@ -252,10 +185,9 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
   <div class="profile">
    <div class="profile-avatar">E</div>
    <div style="min-width:0">
-    <div class="profile-name" id="profileEmailUser">User</div>
-    <div class="profile-sub">Lifetime Free</div>
+    <div class="profile-name">Guest User</div>
+    <div class="profile-sub">Unlocked Access</div>
    </div>
-   <button class="logout-btn" id="logoutBtn">Logout</button>
   </div>
  </div>
 </aside>
@@ -264,163 +196,4 @@ button:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-vis
 <main class="main">
  <header class="topbar">
   <div class="top-left">
-   <button class="icon-btn" id="menuBtn">☰</button>
-   <div class="top-title">ESUKA 2.0</div>
-   <select class="model-selector" id="modelSelect">
-    <option value="groq">Groq (Ultra-Fast)</option>
-    <option value="gemini">Gemini 2.0 (Smart)</option>
-    <option value="deepseek">DeepSeek-R1 (Reasoning)</option>
-   </select>
-  </div>
- </header>
-
- <section class="chat-area" id="chatArea">
-  <div class="chat-inner">
-   <div class="welcome" id="welcome">
-    <div class="hero-orb">E2</div>
-    <h1>ESUKA AI 2.0</h1>
-    <p>Select your preferred model above and begin...</p>
-   </div>
-   <div class="messages" id="messages"></div>
-  </div>
- </section>
-
- <div class="composer-wrap">
-  <div class="composer">
-   <div class="photo-preview" id="esukaPhotoPreview">
-    <img id="esukaPhotoThumb" alt="Preview">
-    <span style="font-size:12px">Photo attached</span>
-    <button type="button" class="action-btn" style="width:30px;height:30px;margin-left:auto" id="esukaRemovePhoto">✕</button>
-   </div>
-   <div class="input-box">
-    <button class="action-btn" id="attachBtn" title="Upload Photo">📁</button>
-    <input id="esukaFileInput" type="file" accept="image/*" hidden>
-    <textarea id="prompt" rows="1" placeholder="Type a message..."></textarea>
-    <button class="action-btn send-btn" id="sendBtn">➔</button>
-   </div>
-  </div>
- </div>
-</main>
-</div>
-
-<!-- GALLERY OVERLAY -->
-<div id="esukaGalleryModal" class="esuka-gallery-overlay">
- <button class="esuka-gallery-close" onclick="closeEsukaGallery()">✕</button>
- <div class="esuka-gallery-body" id="esukaGalleryMedia"></div>
-</div>
-
-<script>
-"use strict";
-const SUPABASE_URL="https://tdpiviiihjaiizltoegt.supabase.co";
-const SUPABASE_KEY="sb_publishable_yJjz9rjnsvMV6bW6DGKi2g_bJWY1CSw";
-const API_URL="https://esuka-ai-web.kataribhai1.workers.dev/";
-
-const supabaseClient=window.supabase.createClient(SUPABASE_URL,SUPABASE_KEY);
-let currentSession=null;
-let imageMode=false;
-let busy=false;
-let attachedPhotoData="";
-const $=id=>document.getElementById(id);
-
-async function initAuth(){
- const {data}=await supabaseClient.auth.getSession();
- if(data.session) showApp(data.session); else showAuth();
-}
-function showAuth(){ $("authScreen").style.display="flex"; $("appRoot").style.display="none"; }
-function showApp(session){
- currentSession=session;
- $("authScreen").style.display="none";
- $("appRoot").style.display="flex";
- if(session.user?.email) $("profileEmailUser.textContent")=session.user.email;
-}
-
-$("emailLoginBtn").onclick=async()=>{
- const {data,error}=await supabaseClient.auth.signInWithPassword({email:$("authEmail").value,password:$("authPassword").value});
- if(error) $("authStatus").textContent=error.message; else showApp(data.session);
-};
-$("signupBtn").onclick=async()=>{
- const {error}=await supabaseClient.auth.signUp({email:$("authEmail").value,password:$("authPassword").value});
- if(error) $("authStatus").textContent=error.message; else $("authStatus").textContent="Verification email sent!";
-};
-$("logoutBtn").onclick=async()=>{ await supabaseClient.auth.signOut(); showAuth(); };
-
-$("attachBtn").onclick=()=>$("esukaFileInput").click();
-$("esukaFileInput").onchange=e=>{
- const file=e.target.files[0]; if(!file)return;
- const reader=new FileReader();
- reader.onload=evt=>{
-  attachedPhotoData=evt.target.result;
-  $("esukaPhotoThumb").src=attachedPhotoData;
-  $("esukaPhotoPreview").style.display="flex";
- };
- reader.readAsDataURL(file);
-};
-$("esukaRemovePhoto").onclick=()=>{
- attachedPhotoData=""; $("esukaPhotoPreview").style.display="none";
-};
-
-function openEsukaGallery(url){
- $("esukaGalleryMedia").innerHTML=`<img src="${url}">`;
- $("esukaGalleryModal").classList.add("active");
-}
-function closeEsukaGallery(){ $("esukaGalleryModal").classList.remove("active"); }
-
-function addMessage(role,text){
- $("welcome").style.display="none";
- const row=document.createElement("div");
- row.className="message "+(role==="user"?"user":"assistant");
- row.innerHTML=`<div class="msg-avatar">${role==="user"?"U":"E"}</div><div class="msg-content"><div class="msg-name">${role==="user"?"You":"ESUKA 2.0"}</div><div class="msg-bubble">${text}</div></div>`;
- $("messages").appendChild(row);
- $("chatArea").scrollTop=$("chatArea").scrollHeight;
-}
-
-function addImage(url){
- const last=$("messages").lastElementChild.querySelector(".msg-content");
- const img=document.createElement("img");
- img.className="generated-image"; img.src=url;
- img.onclick=()=>openEsukaGallery(url);
- last.appendChild(img);
-}
-
-$("sendBtn").onclick=async()=>{
- const text=$("prompt").value.trim();
- const selectedModel=$("modelSelect").value;
- if((!text && !attachedPhotoData) || busy) return;
-
- $("prompt").value="";
- addMessage("user", text || "📷 Photo attached");
- busy=true;
-
- try{
-  const res=await fetch(API_URL,{
-   method:"POST",
-   headers:{"Content-Type":"application/json"},
-   body:JSON.stringify({
-    message: text,
-    model: selectedModel,
-    mode: attachedPhotoData ? "analyze" : (imageMode ? "image" : "chat"),
-    image: attachedPhotoData || null
-   })
-  });
-  const data=await res.json();
-  if(imageMode && data.image){
-   addMessage("assistant","Here is your generated image:");
-   addImage(data.image);
-  } else {
-   addMessage("assistant", data.reply || data.answer || "Response received.");
-  }
- }catch(e){
-  addMessage("assistant","Error: "+e.message);
- }finally{
-  busy=false; attachedPhotoData=""; $("esukaPhotoPreview").style.display="none";
- }
-};
-
-$("menuBtn").onclick=()=>{ $("sidebar").classList.toggle("open"); $("backdrop").classList.toggle("show"); };
-$("backdrop").onclick=()=>{ $("sidebar").classList.remove("open"); $("backdrop").classList.remove("show"); };
-$("sideImageBtn").onclick=()=>{ imageMode=!imageMode; alert("Image Mode: "+(imageMode?"ON (Next prompt will generate image)":"OFF")); };
-
-initAuth();
-</script>
-</body>
-</html>
+   <button class="icon-btn" id="
